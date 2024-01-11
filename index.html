@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>My Task App</title>
+        <link rel="icon" type="image/png" sizes="36x36" href="favicon_v2\android-icon-36x36.png">
+
+        <body>
+            <div width="80%" margin="auto">
+                <l>This is a simple project that uses an input form to apped items to a task list.</l>
+            </div>
+        </body>
+        <script>
+
+            async function loadTasks() {
+                res = await fetch('get-tasks', {
+                    method: "GET",
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                jsonRes = await res.json()
+
+                ulEl = document.getElementById("tasks")
+                for (task of jsonRes.tasks) {
+                    liEl = document.createElement("li") //create list item
+                    liEl.textContent = task //set value of the task
+                    ulEl.appendChild(liEl)
+
+                }
+            }
+
+
+            async function handleSaveTask(){
+                ulEl = document.getElementById("tasks")
+                inputEl = document.getElementById("task")
+
+                liEl = document.createElement("li")
+                liEl.textContent = inputEl.value
+                ulEl.appendChild(liEl)
+
+                payload = {
+                    task: inputEl.value
+                }
+                                    //v creates endpoint in backend called save-task.
+                                    //fetch will automatically add local host port
+                                    //   address to the fetch command
+                                    //   (fetch(localhost3000/save-task))
+                res = await fetch("save-task", {
+                    method: "POST",
+                    body: JSON.stringify(payload), //converts payload into JSON format
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                jsonRes = await res.json()
+                console.log(jsonRes)
+            }
+        </script>
+
+        <link rel="stylesheet" href="style.css" /><!--this command says to look at style in the style sheet-->
+
+
+
+    <body onload= "loadTasks()">
+
+            <div id="One">
+                <img id="image1" src="images\avy1.png">
+            </div>
+
+                <div>
+                    <label id="labelAddTask">Add Task: </label>
+                    <input id="task" type="text" placeholder="new task" />
+                    <button id="button1" onClick="handleSaveTask()">Save</button>
+                </div>
+                <div>
+                    <ul id="tasks"></ul>
+                </div>
+
+    </body>
